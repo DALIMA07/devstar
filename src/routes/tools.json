@@ -117,9 +117,36 @@
             }
         ]
     },
-    "gradient-generator": {
+    "Finance-Calculator": {
+        "name": "Finance Calculator",
+        "link": "/Finance-Calculator",
+        "description": "",
+        "contributors": [
+            {
+                "name": "Kamaria Ayan",
+                "githubId": "/ayan2362003"
+            },
+            {
+                "name": "",
+                "githubId": ""
+            },
+            {
+                "name": "",
+                "githubId": ""
+            },
+            {
+                "name": "",
+                "githubId": ""
+            },
+            {
+                "name": "",
+                "githubId": ""
+            }
+        ]
+    },
+    "Gradient-generator": {
         "name": "Gradient Generator",
-        "link": "/gradient-generator",
+        "link": "/Gradient-generator",
         "description": "The Gradient Generator is a tool for Developers which allows you to create Gradient between 2 Colors and Copy its CSS Output.",
         "contributors": [
             {
