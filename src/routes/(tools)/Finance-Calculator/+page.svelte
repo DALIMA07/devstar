@@ -1,194 +1,279 @@
 <script>
-    let showInterestCalculator = true;
-    let showHomeLoanCalculator = false;
-
-    function toggleCalculator(calculator) {
-        if (calculator === 'interest') {
-            showInterestCalculator = true;
-            showHomeLoanCalculator = false;
-        } else {
-            showInterestCalculator = false;
-            showHomeLoanCalculator = true;
-        }
+    import { onMount } from 'svelte';
+   
+    let calculators = [
+      {
+        title: "ROI Calculator",
+        description: "Calculate returns on investments to assess profitability.",
+        id: "roi",
+      },
+      {
+        title: "Currency Converter",
+        description: "Quickly convert currencies using live exchange rates.",
+        id: "currency",
+      },
+      {
+        title: "Salary Calculator",
+        description: "Estimate your monthly or annual salary after deductions.",
+        id: "salary",
+      },
+      {
+        title: "GST Calculator",
+        description: "Calculate Goods and Services Tax for your transactions.",
+        id: "gst",
+      },
+      {
+        title: "Home Loan Calculator",
+        description: "Estimate your home loan EMIs and total payment.",
+        id: "homeLoan",
+      },
+      {
+        title: "TVM Calculator",
+        description: "Plan your financial future by calculating Time Value of Money.",
+        id: "tvm",
+      }
+    ];
+   
+    let selectedCalculator = null;
+   
+    // ROI Calculator variables and function
+    let initialInvestment = 0, finalValue = 0, roi = 0;
+    function calculateROI() {
+      roi = ((finalValue - initialInvestment) / initialInvestment) * 100;
     }
-
-    let money = 0;
-    let rate = 0;
-    let time = 0;
-    let interest = 0;
-
-    function calculateInterest() {
-        interest = (money * rate * time) / 100;
+   
+    // Currency Converter variables and function (assuming static exchange rate for simplicity)
+    let amount = 0, convertedAmount = 0, exchangeRate = 1.2; // Example: USD to EUR
+    function convertCurrency() {
+      convertedAmount = amount * exchangeRate;
     }
-
-    let amount = 0;
-    let interestRate = 0;
-    let yearTerm = 0;
-    let monthlyIncome = 0;
-    let emi = 0;
-    let totalPayment = 0;
-    let totalInterest = 0;
-    let remainingIncome = 0;
-
-    function calculateEMI() {
-        let monthlyRate = interestRate / 12 / 100;
-        let numberOfMonths = yearTerm * 12;
-        emi = (amount * monthlyRate * Math.pow(1 + monthlyRate, numberOfMonths)) / (Math.pow(1 + monthlyRate, numberOfMonths) - 1);
-        totalPayment = emi * numberOfMonths;
-        totalInterest = totalPayment - amount;
-        remainingIncome = monthlyIncome - emi;
+   
+    // Salary Calculator variables and function
+    let grossSalary = 0, deductions = 0, netSalary = 0;
+    function calculateNetSalary() {
+      netSalary = grossSalary - deductions;
     }
-</script>
-
-<style>
+   
+    // GST Calculator variables and function
+    let priceWithoutGST = 0, gstRate = 18, priceWithGST = 0;
+    function calculateGST() {
+      priceWithGST = priceWithoutGST * (1 + gstRate / 100);
+    }
+   
+    // Home Loan Calculator variables and function
+    let loanAmount = 0, annualInterestRate = 0, loanTenure = 0, emi = 0, totalPayment = 0;
+    function calculateHomeLoan() {
+      let monthlyInterestRate = annualInterestRate / 12 / 100;
+      let numberOfPayments = loanTenure * 12;
+      emi = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+      totalPayment = emi * numberOfPayments;
+    }
+   
+    // TVM Calculator variables and function
+    let presentValue = 0, interestRate = 0, periods = 0, futureValue = 0;
+    function calculateFutureValue() {
+      futureValue = presentValue * Math.pow(1 + interestRate / 100, periods);
+    }
+   
+    function selectCalculator(id) {
+      selectedCalculator = id;
+    }
+  </script>
+   
+  <style>
+    .card {
+      cursor: pointer;
+    }
     .calculator {
-        max-width: 400px;
-        margin: 1rem auto;
-        padding: 2rem;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-    }
-    .calculator h2 {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        font-size: 1.5rem;
-        color: #333;
+      border-radius: 8px;
+      max-width: 400px;
+      box-shadow: 0px -10px 0px rgb(24, 14, 14), 0px 10px 0px rgb(24, 14, 14);
     }
     .calculator label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-        color: #555;
+      display: block;
+      margin-top: 8px;
     }
     .calculator input {
-        display: block;
-        width: calc(100% - 1rem);
-        margin-bottom: 1rem;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-top: 4px;
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
     }
-    .calculator button {
-        display: block;
-        width: 100%;
-        padding: 0.75rem;
-        border: none;
-        background-color: #007bff;
-        color: white;
-        border-radius: 5px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .calculator button:hover {
-        background-color: #0056b3;
-    }
-    .calculator p {
-        margin-top: 1rem;
-        font-size: 1.1rem;
-        color: #333;
-    }
-    .card {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        align-items: center;
-        margin: auto;
-        max-width: 1200px;
-        padding: 16px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-    }
-    .button-container {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-    .toggle-button {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .toggle-button:hover {
-        background-color: #0056b3;
-    }
-    .toggle-button.active {
-        background-color: #0056b3;
-    }
-</style>
-
-<div class="card">
-    <div class="button-container">
-        <button 
-            class="toggle-button {showInterestCalculator ? 'active' : ''}" 
-            on:click={() => toggleCalculator('interest')}
-        >
-            Interest Calculator
-        </button>
-        <button 
-            class="toggle-button {showHomeLoanCalculator ? 'active' : ''}" 
-            on:click={() => toggleCalculator('home')}
-        >
-            Home Loan Calculator
-        </button>
+  </style>
+   
+  <header class="bg-white py-4 shadow-md sticky top-0 z-10">
+    <div class="container mx-auto px-4 flex flex-wrap justify-between items-center text-[#374151] p-3">
+      <h1 class="text-2xl font-bold">Craftlab</h1>
+      <div class="flex space-x-4 font-semibold text-base md:text-1xl">
+        <h1 class="text-blue-700">Home</h1>
+        <h1>Free Trial</h1>
+        <h1>Information</h1>
+        <h1>Calculators</h1>
+        <h1>Contact Us</h1>
+      </div>
     </div>
-    {#if showInterestCalculator}
-        <div class="calculator">
-            <h2>Interest Calculator</h2>
-            <label>
-                Money:
-                <input type="number" bind:value={money} min="0" step="0.01">
-            </label>
-            <label>
-                Rate of Interest (%):
-                <input type="number" bind:value={rate} min="0" step="0.01">
-            </label>
-            <label>
-                Time (years):
-                <input type="number" bind:value={time} min="0" step="0.01">
-            </label>
-            <button on:click={calculateInterest}>Calculate Interest</button>
-            {#if interest}
-                <p>Interest: {interest.toFixed(2)}</p>
-            {/if}
+  </header>
+   
+  <div class="container mx-auto my-5 p-5">
+    <section class="bg-gray-50">
+      <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:px-12">
+        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl">
+          Powerful Financial Calculators at Your Fingertips
+        </h1>
+        <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48">
+          Optimize your financial decisions with our comprehensive suite of online calculators.
+          Explore our user-friendly tools and harness the full potential of your financial planning.
+        </p>
+        <div class="px-4 mx-auto text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
+          <div class="relative w-full p-2 border bg-white border-gray-300 rounded-lg">
+            <div class="flex absolute inset-y-0 items-center text-gray-500 left-0 pl-2.5 pointer-events-none">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <input class="hover:border-none block w-full disabled:cursor-not-allowed disabled:opacity-50 pl-11 bg-white text-gray-900 sm:text-base rounded-lg focus:outline-none focus:border-gray-300" placeholder="Search" type="search" />
+          </div>
         </div>
-    {/if}
-    {#if showHomeLoanCalculator}
-        <div class="calculator">
-            <h2>Home Loan Calculator</h2>
-            <label>
-                Loan Amount:
-                <input type="number" bind:value={amount} min="0" step="0.01">
-            </label>
-            <label>
-                Annual Interest Rate (%):
-                <input type="number" bind:value={interestRate} min="0" step="0.01">
-            </label>
-            <label>
-                Loan Term (years):
-                <input type="number" bind:value={yearTerm} min="0" step="0.01">
-            </label>
-            <label>
-                Monthly Income:
-                <input type="number" bind:value={monthlyIncome} min="0" step="0.01">
-            </label>
-            <button on:click={calculateEMI}>Calculate</button>
-            {#if emi}
-                <p>Monthly EMI: {emi.toFixed(2)}</p>
-                <p>Total Payment: {totalPayment.toFixed(2)}</p>
-                <p>Total Interest: {totalInterest.toFixed(2)}</p>
-                <p>Remaining Income after EMI: {remainingIncome.toFixed(2)}</p>
-            {/if}
-        </div>
-    {/if}
-</div>
+      </div>
+    </section>
+   
+    <section class="container mx-auto my-5 p-5">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {#each calculators as calculator}
+          <div class="card block bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden hover:bg-gray-100" on:click={() => selectCalculator(calculator.id)}>
+            <div class="card-content p-4">
+              <h5 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white p-1">
+                {calculator.title}
+              </h5>
+              <p class="card-description text-[#6B7280] p-2 text-base">
+                {calculator.description}
+              </p>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </section>
+   
+    {#if selectedCalculator === 'roi'}
+    <div class="calculator p-6 rounded-lg shadow-lg max-w-md mx-auto mt-10 mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-center py-2 rounded-lg">ROI Calculator</h2>
+   
+      <label class="block mb-2">
+        Initial Investment:
+        <input type="number" bind:value={initialInvestment} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-4">
+        Final Value:
+        <input type="number" bind:value={finalValue} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <button on:click={calculateROI} class="bg-blue-500 text-white py-2 px-4 rounded w-full font-bold">
+        Calculate ROI
+      </button>
+      <p class="mt-4 text-lg font-semibold">ROI: {roi.toFixed(2)}%</p>
+    </div>
+  {/if}
+   
+  {#if selectedCalculator === 'currency'}
+    <div class="calculator p-6 rounded-lg shadow-lg max-w-md mx-auto mt-10 mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-center  py-2 rounded-lg">Currency Converter</h2>
+   
+      <label class="block mb-2">
+        Amount in USD:
+        <input type="number" bind:value={amount} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <button on:click={convertCurrency} class="bg-teal-600 text-white py-2 px-4 rounded w-full font-bold">
+        Convert to EUR
+      </button>
+        <p class="mt-4 text-lg font-semibold">Converted Amount: {convertedAmount.toFixed(2)} EUR</p>
+    </div>
+  {/if}
+   
+  {#if selectedCalculator === 'salary'}
+    <div class="calculator p-6 rounded-lg shadow-lg max-w-md mx-auto mt-10 mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-center   py-2 rounded-lg">Salary Calculator</h2>
+   
+      <label class="block mb-2">
+        Gross Salary:
+        <input type="number" bind:value={grossSalary} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-2">
+        Deductions:
+        <input type="number" bind:value={deductions} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <button on:click={calculateNetSalary} class="bg-green-500 text-white py-2 px-4 rounded w-full font-bold">
+        Calculate Net Salary
+      </button>
+        <p class="mt-4 text-lg font-semibold">Net Salary: {netSalary.toFixed(2)}</p>
+    </div>
+  {/if}
+   
+  {#if selectedCalculator === 'gst'}
+    <div class="calculator p-6 rounded-lg shadow-lg max-w-md mx-auto mt-10 mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-center py-2 rounded-lg">GST Calculator</h2>
+   
+      <label class="block mb-2">
+        Price without GST:
+        <input type="number" bind:value={priceWithoutGST} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-2">
+        GST Rate (%):
+        <input type="number" bind:value={gstRate} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <button on:click={calculateGST} class="bg-yellow-400 text-white py-2 px-4 rounded w-full font-bold">
+        Calculate Price with GST
+      </button>
+        <p class="mt-4 text-lg font-semibold">Price with GST: {priceWithGST.toFixed(2)}</p>
+    </div>
+  {/if}
+   
+  {#if selectedCalculator === 'homeLoan'}
+    <div class="calculator p-6 rounded-lg shadow-lg max-w-md mx-auto mt-10 mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-center   py-2 rounded-lg">Home Loan Calculator</h2>
+   
+      <label class="block mb-2">
+        Loan Amount:
+        <input type="number" bind:value={loanAmount} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-2">
+        Annual Interest Rate (%):
+        <input type="number" bind:value={annualInterestRate} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-2">
+        Loan Tenure (years):
+        <input type="number" bind:value={loanTenure} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <button on:click={calculateHomeLoan} class="bg-purple-500 text-white py-2 px-4 rounded w-full font-bold">
+        Calculate EMI
+      </button>
+        <p class="mt-4 text-lg font-semibold">EMI: {emi.toFixed(2)}</p>
+      <p>Total Payment: {totalPayment.toFixed(2)}</p>
+    </div>
+  {/if}
+   
+  {#if selectedCalculator === 'tvm'}
+    <div class="calculator p-6 rounded-lg shadow-lg max-w-md mx-auto mt-10 mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-center  py-2 rounded-lg">TVM Calculator</h2>
+   
+      <label class="block mb-2">
+        Present Value:
+        <input type="number" bind:value={presentValue} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-2">
+        Interest Rate (%):
+        <input type="number" bind:value={interestRate} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <label class="block mb-2">
+        Number of Periods:
+        <input type="number" bind:value={periods} class="border border-gray-300 rounded w-full py-2 px-3 mt-1" />
+      </label>
+      <button on:click={calculateFutureValue} class="bg-indigo-500 text-white py-2 px-4 rounded w-full font-bold">
+        Calculate Future Value
+      </button>
+        <p class="mt-4 text-lg font-semibold">Future Value: {futureValue.toFixed(2)}</p>
+    </div>
+  {/if}
+   
+    <footer class="bg-gray-100 py-4 text-center mt-10">
+      <p class="text-gray-600">&copy; All rights reserved.</p>
+    </footer>
+  </div>
