@@ -117,14 +117,17 @@
             }
         ]
     },
-    "Finance-Calculator": {
+
+
+    "finance-calculator": {
         "name": "Finance Calculator",
-        "link": "/Finance-Calculator",
+        "link": "/finance-calculator",
         "description": "",
         "contributors": [
             {
-                "name": "Kamaria Ayan",
-                "githubId": "/ayan2362003"
+                "name": "",
+                "githubId": ""
+
             },
             {
                 "name": "",
